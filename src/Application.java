@@ -10,42 +10,48 @@ public class Application {
     public ArrayList <String> graficArr=new ArrayList<String>();
     private Loader load = new Loader();
 
-    public void addFilm(String name,String date){
-        Date Current_Date = new Date();
-        SimpleDateFormat format1 = new SimpleDateFormat("dd.MM.yyyy");
-        format1.format(Current_Date);
-        if (Integer.parseInt(format1.format(Current_Date).substring(6))>Integer.parseInt(date.substring(6))){
-            pastArr.add(name+' '+date);
+    public void createGrafic(){
+        graficArr.clear();
+
+        for (String str:filmsArr){
+            graficArr.add(str);
         }
-        else
-            if (Integer.parseInt(format1.format(Current_Date).substring(6))==Integer.parseInt(date.substring(6))){
-                if (Integer.parseInt(format1.format(Current_Date).substring(3,4))>Integer.parseInt(date.substring(3,4))){
-                    if (Integer.parseInt(format1.format(Current_Date).substring(0,1))>Integer.parseInt(date.substring(0,1))){
-                        pastArr.add(name+' '+date);
+
+        for (String str:serialsArr){
+            graficArr.add(str);
+        }
+    }
+
+    public void sortGrafic(){
+        for (int i=0;i<graficArr.size()-1;i++){
+            for (int j=i+1;j<graficArr.size();j++){
+                if(Integer.parseInt(graficArr.get(i).substring(graficArr.get(i).length()-4))>Integer.parseInt(graficArr.get(j).substring(graficArr.get(j).length()-4))){
+                    String tmp=graficArr.get(i);
+                    graficArr.set(i,graficArr.get(j));
+                    graficArr.set(j,tmp);
+                }
+                else{
+                    if (Integer.parseInt(graficArr.get(i).substring(graficArr.get(i).length()-4))==Integer.parseInt(graficArr.get(j).substring(graficArr.get(j).length()-4))){
+                        int a=Integer.parseInt(graficArr.get(i).substring(graficArr.get(i).length() - 7, graficArr.get(i).length() - 5));
+                        int b=Integer.parseInt(graficArr.get(j).substring(graficArr.get(j).length()-7,graficArr.get(j).length()-5));
+                        if (a>b){
+                           String tmp=graficArr.get(i);
+                           graficArr.set(i,graficArr.get(j));
+                           graficArr.set(j,tmp);
+                       }
+                        else {
+                           if (Integer.parseInt(graficArr.get(i).substring(graficArr.get(i).length()-7,graficArr.get(i).length()-5))==Integer.parseInt(graficArr.get(j).substring(graficArr.get(j).length()-7,graficArr.get(j).length()-5))){
+                               if (Integer.parseInt(graficArr.get(i).substring(graficArr.get(i).length()-10,graficArr.get(i).length()-8))>Integer.parseInt(graficArr.get(j).substring(graficArr.get(j).length()-10,graficArr.get(j).length()-8))){
+                                   String tmp=graficArr.get(i);
+                                   graficArr.set(i,graficArr.get(j));
+                                   graficArr.set(j,tmp);
+                               }
+                           }
+                       }
                     }
                 }
             }
-            else
-                filmsArr.add(name+' '+date);
-    }
-
-    public void addSerial(String name,String date){
-        Date Current_Date = new Date();
-        SimpleDateFormat format1 = new SimpleDateFormat("dd.MM.yyyy");
-        format1.format(Current_Date);
-        if (Integer.parseInt(format1.format(Current_Date).substring(6))>Integer.parseInt(date.substring(6))){
-            pastArr.add(name+' '+date);
         }
-        else
-        if (Integer.parseInt(format1.format(Current_Date).substring(6))==Integer.parseInt(date.substring(6))){
-            if (Integer.parseInt(format1.format(Current_Date).substring(3,4))>Integer.parseInt(date.substring(3,4))){
-                if (Integer.parseInt(format1.format(Current_Date).substring(0,1))>Integer.parseInt(date.substring(0,1))){
-                    pastArr.add(name+' '+date);
-                }
-            }
-        }
-        else
-            serialsArr.add(name+' '+date);
     }
 
     public void uploadFilms() throws IOException {
@@ -56,6 +62,11 @@ public class Application {
         load.uploadSerials(serialsArr);
     }
 
+    public void uploadPast() throws IOException {
+        load.uploadPast(pastArr);
+    }
+
+
     public void saveFilms() throws IOException {
         load.saveFilms(filmsArr);
     }
@@ -64,4 +75,7 @@ public class Application {
         load.saveSerials(serialsArr);
     }
 
+    public void savePast() throws IOException {
+        load.savePast(pastArr);
+    }
 }

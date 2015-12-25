@@ -3,9 +3,12 @@
  * @author Виктория
  */
 import javax.swing.*;
+import java.awt.*;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.prefs.Preferences;
 
 public class MainForm extends JFrame {
 
@@ -17,14 +20,16 @@ public class MainForm extends JFrame {
     private javax.swing.ButtonGroup buttonGroup1= new javax.swing.ButtonGroup();
     private javax.swing.JButton cancelButton = new javax.swing.JButton();
     private javax.swing.JMenuItem deleteMenuItem;
+
     private javax.swing.JFrame dialogAdd = new javax.swing.JFrame();
     private javax.swing.JFrame dialogDelete = new javax.swing.JFrame();
+
     private javax.swing.JMenu editMenu;
     private javax.swing.JRadioButton filmRadioButton= new javax.swing.JRadioButton();
     private static javax.swing.JList films = new javax.swing.JList<String>();
     private static javax.swing.JList grafic = new javax.swing.JList<String>();
     private javax.swing.JMenu helpMenu;
-    private javax.swing.JButton jButton1= new javax.swing.JButton();
+    private javax.swing.JButton okDeleteButton = new javax.swing.JButton();
     private javax.swing.JLabel jLabel1 = new javax.swing.JLabel();
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -41,26 +46,33 @@ public class MainForm extends JFrame {
     private javax.swing.JScrollPane jScrollPane3= new javax.swing.JScrollPane();
     private javax.swing.JScrollPane jScrollPane4= new javax.swing.JScrollPane();
     private javax.swing.JTabbedPane jTabbedPane4 = new javax.swing.JTabbedPane();
-    private javax.swing.JTextField jTextField1= new javax.swing.JTextField();
+    private javax.swing.JTextField nameDelete = new javax.swing.JTextField();
     private javax.swing.JTextField nameAdd = new javax.swing.JTextField();
     private javax.swing.JButton okButton = new javax.swing.JButton();
     private static javax.swing.JList past= new javax.swing.JList<String>();
     private javax.swing.JMenu saveMenuItem;
+
     private javax.swing.JButton seachButton;
     private javax.swing.JSpinner seachDay;
     private javax.swing.JSpinner seachMonth;
     private javax.swing.JComboBox seachYear;
+
     private static javax.swing.JList serial = new javax.swing.JList<String>();
     private javax.swing.JRadioButton serialRadioButton= new javax.swing.JRadioButton();
+
     private static Application app=new Application();
     private static DefaultListModel<String> modelFilms=new DefaultListModel<String>();
     private static DefaultListModel<String> modelSerials=new DefaultListModel<String>();
     private static DefaultListModel<String> modelPast=new DefaultListModel<String>();
     private static DefaultListModel<String> modelGrafic=new DefaultListModel<String>();
+    private static Preferences userPrefs;
+
     // End of variables declaration
 
         public MainForm() {
             java.awt.GridBagConstraints gridBagConstraints;
+
+            //userPrefs = Preferences.userRoot().node("prefsave");
 
             jPanel1 = new javax.swing.JPanel();
             seachDay = new javax.swing.JSpinner();
@@ -82,6 +94,8 @@ public class MainForm extends JFrame {
             dialogAddLayout.columnWidths = new int[] {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
             dialogAddLayout.rowHeights = new int[] {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
             dialogAdd.getContentPane().setLayout(dialogAddLayout);
+           // dialogAdd.setPreferredSize(new java.awt.Dimension(400, 200));
+            dialogAdd.setMinimumSize(new java.awt.Dimension(550, 300));
 
             jLabel1.setFont(new java.awt.Font("Segoe Print", 1, 14)); // NOI18N
             jLabel1.setText("Название:");
@@ -99,6 +113,7 @@ public class MainForm extends JFrame {
             nameAdd.setForeground(new java.awt.Color(0, 102, 102));
             nameAdd.setText("Введите название");
             nameAdd.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
+
             gridBagConstraints = new java.awt.GridBagConstraints();
             gridBagConstraints.gridx = 0;
             gridBagConstraints.gridy = 2;
@@ -107,10 +122,13 @@ public class MainForm extends JFrame {
             gridBagConstraints.weightx = 0.5;
             gridBagConstraints.weighty = 0.5;
             gridBagConstraints.insets = new java.awt.Insets(3, 6, 3, 6);
+
             dialogAdd.getContentPane().add(nameAdd, gridBagConstraints);
+
 
             jLabel4.setFont(new java.awt.Font("Segoe Print", 1, 14)); // NOI18N
             jLabel4.setText("Дата выхода:");
+
             gridBagConstraints = new java.awt.GridBagConstraints();
             gridBagConstraints.gridx = 0;
             gridBagConstraints.gridy = 4;
@@ -119,7 +137,9 @@ public class MainForm extends JFrame {
             gridBagConstraints.weightx = 0.5;
             gridBagConstraints.weighty = 0.5;
             gridBagConstraints.insets = new java.awt.Insets(4, 6, 4, 6);
+
             dialogAdd.getContentPane().add(jLabel4, gridBagConstraints);
+
 
             java.awt.GridBagLayout jPanel2Layout = new java.awt.GridBagLayout();
             jPanel2Layout.columnWidths = new int[] {0, 5, 0, 5, 0, 5, 0, 5, 0, 5, 0, 5, 0, 5, 0, 5, 0};
@@ -129,28 +149,37 @@ public class MainForm extends JFrame {
             addDay.setFont(new java.awt.Font("Segoe Print", 1, 14)); // NOI18N
             addDay.setModel(new javax.swing.SpinnerNumberModel(1, 1, 31, 1));
             addDay.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
+
             gridBagConstraints = new java.awt.GridBagConstraints();
             gridBagConstraints.gridx = 0;
             gridBagConstraints.gridy = 0;
+
             jPanel2.add(addDay, gridBagConstraints);
+
 
             addMonth.setFont(new java.awt.Font("Segoe Print", 1, 14)); // NOI18N
             addMonth.setModel(new javax.swing.SpinnerNumberModel(1, 1, 12, 1));
             addMonth.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
+
             gridBagConstraints = new java.awt.GridBagConstraints();
             gridBagConstraints.gridx = 2;
             gridBagConstraints.gridy = 0;
+
             jPanel2.add(addMonth, gridBagConstraints);
+
 
             addYear.setFont(new java.awt.Font("Segoe Print", 1, 14)); // NOI18N
             addYear.setEditable(true);
             addYear.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "2015", "2016", "2017", "2018" }));
+
             gridBagConstraints = new java.awt.GridBagConstraints();
             gridBagConstraints.gridx = 4;
             gridBagConstraints.gridy = 0;
             gridBagConstraints.gridwidth = 7;
             gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+
             jPanel2.add(addYear, gridBagConstraints);
+
 
             gridBagConstraints = new java.awt.GridBagConstraints();
             gridBagConstraints.gridx = 0;
@@ -160,16 +189,20 @@ public class MainForm extends JFrame {
             gridBagConstraints.weightx = 0.5;
             gridBagConstraints.weighty = 0.5;
             gridBagConstraints.insets = new java.awt.Insets(2, 10, 2, 10);
+
             dialogAdd.getContentPane().add(jPanel2, gridBagConstraints);
+
 
             okButton.setBackground(new java.awt.Color(102, 102, 102));
             okButton.setFont(new java.awt.Font("Segoe Script", 2, 14)); // NOI18N
             okButton.setText("Ок");
+
             okButton.addActionListener(new java.awt.event.ActionListener() {
                 public void actionPerformed(java.awt.event.ActionEvent evt) {
                     okButtonActionPerformed(evt);
                 }
             });
+
             gridBagConstraints = new java.awt.GridBagConstraints();
             gridBagConstraints.gridx = 0;
             gridBagConstraints.gridy = 8;
@@ -178,16 +211,20 @@ public class MainForm extends JFrame {
             gridBagConstraints.weightx = 1.0;
             gridBagConstraints.weighty = 1.0;
             gridBagConstraints.insets = new java.awt.Insets(10, 74, 10, 34);
+
             dialogAdd.getContentPane().add(okButton, gridBagConstraints);
+
 
             cancelButton.setBackground(new java.awt.Color(102, 102, 102));
             cancelButton.setFont(new java.awt.Font("Segoe Script", 2, 14)); // NOI18N
             cancelButton.setText("Отмена");
+
             cancelButton.addActionListener(new java.awt.event.ActionListener() {
                 public void actionPerformed(java.awt.event.ActionEvent evt) {
                     cancelButtonActionPerformed(evt);
                 }
             });
+
             gridBagConstraints = new java.awt.GridBagConstraints();
             gridBagConstraints.gridx = 18;
             gridBagConstraints.gridy = 8;
@@ -196,31 +233,39 @@ public class MainForm extends JFrame {
             gridBagConstraints.weightx = 1.0;
             gridBagConstraints.weighty = 1.0;
             gridBagConstraints.insets = new java.awt.Insets(10, 24, 10, 74);
+
             dialogAdd.getContentPane().add(cancelButton, gridBagConstraints);
+
 
             jPanel4.setLayout(new java.awt.GridBagLayout());
 
             buttonGroup1.add(filmRadioButton);
             filmRadioButton.setFont(new java.awt.Font("Segoe Print", 3, 14)); // NOI18N
             filmRadioButton.setText("Фильм");
+
             gridBagConstraints = new java.awt.GridBagConstraints();
             gridBagConstraints.gridx = 0;
             gridBagConstraints.gridy = 0;
             gridBagConstraints.anchor = java.awt.GridBagConstraints.PAGE_START;
             gridBagConstraints.weightx = 0.5;
             gridBagConstraints.insets = new java.awt.Insets(6, 10, 6, 10);
+
             jPanel4.add(filmRadioButton, gridBagConstraints);
+
 
             buttonGroup1.add(serialRadioButton);
             serialRadioButton.setFont(new java.awt.Font("Segoe Print", 3, 14)); // NOI18N
             serialRadioButton.setText("Сериал");
+
             gridBagConstraints = new java.awt.GridBagConstraints();
             gridBagConstraints.gridx = 0;
             gridBagConstraints.gridy = 1;
             gridBagConstraints.anchor = java.awt.GridBagConstraints.PAGE_END;
             gridBagConstraints.weightx = 0.5;
             gridBagConstraints.insets = new java.awt.Insets(6, 10, 6, 10);
+
             jPanel4.add(serialRadioButton, gridBagConstraints);
+
 
             gridBagConstraints = new java.awt.GridBagConstraints();
             gridBagConstraints.gridx = 28;
@@ -229,12 +274,16 @@ public class MainForm extends JFrame {
             gridBagConstraints.anchor = java.awt.GridBagConstraints.BASELINE;
             gridBagConstraints.weightx = 0.5;
             gridBagConstraints.weighty = 0.5;
+
             dialogAdd.getContentPane().add(jPanel4, gridBagConstraints);
 
-            dialogDelete.setPreferredSize(new java.awt.Dimension(300, 150));
+
+            dialogDelete.setMinimumSize(new java.awt.Dimension(300, 170));
+            //dialogDelete.setPreferredSize(new java.awt.Dimension(300, 150));
             dialogDelete.getContentPane().setLayout(new java.awt.GridBagLayout());
 
-            jTextField1.setFont(new java.awt.Font("Segoe Script", 2, 14)); // NOI18N
+            nameDelete.setFont(new java.awt.Font("Segoe Script", 2, 14)); // NOI18N
+
             gridBagConstraints = new java.awt.GridBagConstraints();
             gridBagConstraints.gridx = 0;
             gridBagConstraints.gridy = 1;
@@ -244,10 +293,13 @@ public class MainForm extends JFrame {
             gridBagConstraints.weightx = 0.5;
             gridBagConstraints.weighty = 0.5;
             gridBagConstraints.insets = new java.awt.Insets(13, 0, 13, 0);
-            dialogDelete.getContentPane().add(jTextField1, gridBagConstraints);
+
+            dialogDelete.getContentPane().add(nameDelete, gridBagConstraints);
+
 
             jLabel5.setFont(new java.awt.Font("Segoe Print", 3, 14)); // NOI18N
             jLabel5.setText("Введите название:");
+
             gridBagConstraints = new java.awt.GridBagConstraints();
             gridBagConstraints.gridx = 4;
             gridBagConstraints.gridy = 0;
@@ -255,16 +307,29 @@ public class MainForm extends JFrame {
             gridBagConstraints.weightx = 0.5;
             gridBagConstraints.weighty = 0.5;
             gridBagConstraints.insets = new java.awt.Insets(6, 0, 6, 0);
+
             dialogDelete.getContentPane().add(jLabel5, gridBagConstraints);
 
-            jButton1.setBackground(new java.awt.Color(102, 102, 102));
-            jButton1.setFont(new java.awt.Font("Segoe Print", 1, 14)); // NOI18N
-            jButton1.setText("Ok");
+            okDeleteButton.setBackground(new java.awt.Color(102, 102, 102));
+            okDeleteButton.setFont(new java.awt.Font("Segoe Print", 1, 14)); // NOI18N
+            okDeleteButton.setText("Ok");
+
+            okDeleteButton.addActionListener(new java.awt.event.ActionListener(){
+                public void actionPerformed(java.awt.event.ActionEvent evt) {
+                    try {
+                        okDeleteButtonActionPerformed(evt);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+
             gridBagConstraints = new java.awt.GridBagConstraints();
             gridBagConstraints.gridx = 4;
             gridBagConstraints.gridy = 2;
             gridBagConstraints.gridwidth = 5;
-            dialogDelete.getContentPane().add(jButton1, gridBagConstraints);
+
+            dialogDelete.getContentPane().add(okDeleteButton, gridBagConstraints);
 
             setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
             setPreferredSize(new java.awt.Dimension(700, 400));
@@ -272,10 +337,13 @@ public class MainForm extends JFrame {
 
             jPanel3.setMinimumSize(new java.awt.Dimension(450, 103));
             jPanel3.setPreferredSize(new java.awt.Dimension(500, 310));
+
             java.awt.GridBagLayout jPanel3Layout = new java.awt.GridBagLayout();
             jPanel3Layout.columnWidths = new int[] {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
             jPanel3Layout.rowHeights = new int[] {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
             jPanel3.setLayout(jPanel3Layout);
+
+            jScrollPane3.setBorder(null);
 
             grafic.setBackground(new java.awt.Color(51, 51, 51));
             grafic.setFont(new java.awt.Font("Segoe Script", 1, 14)); // NOI18N
@@ -285,7 +353,7 @@ public class MainForm extends JFrame {
             //    public int getSize() { return strings.length; }
             //    public Object getElementAt(int i) { return strings[i]; }
             //});
-            grafic.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+            grafic.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
             grafic.setMaximumSize(new java.awt.Dimension(44, 72));
             grafic.setMinimumSize(new java.awt.Dimension(44, 70));
             grafic.setName(""); // NOI18N
@@ -306,6 +374,7 @@ public class MainForm extends JFrame {
             gridBagConstraints.anchor = java.awt.GridBagConstraints.BASELINE;
             gridBagConstraints.weightx = 2.0;
             gridBagConstraints.weighty = 2.0;
+
             jPanel3.add(jScrollPane3, gridBagConstraints);
 
             jTabbedPane4.setBackground(new java.awt.Color(255, 255, 255));
@@ -331,6 +400,7 @@ public class MainForm extends JFrame {
                     filmsValueChanged(evt);
                 }
             });
+
             jScrollPane1.setViewportView(films);
 
             jTabbedPane4.addTab("Фильмы", jScrollPane1);
@@ -345,7 +415,9 @@ public class MainForm extends JFrame {
             //    public int getSize() { return strings.length; }
             //    public Object getElementAt(int i) { return strings[i]; }
             //});
+
             serial.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+
             serial.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
                 public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
                     serialValueChanged(evt);
@@ -362,12 +434,14 @@ public class MainForm extends JFrame {
             //    public int getSize() { return strings.length; }
             //    public Object getElementAt(int i) { return strings[i]; }
             //});
+
             past.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
             past.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
                 public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
                     pastValueChanged(evt);
                 }
             });
+
             jScrollPane4.setViewportView(past);
 
             jTabbedPane4.addTab("Прошедшие", jScrollPane4);
@@ -382,7 +456,9 @@ public class MainForm extends JFrame {
             gridBagConstraints.weightx = 2.5;
             gridBagConstraints.weighty = 2.0;
             gridBagConstraints.insets = new java.awt.Insets(0, 1, 0, 1);
+
             jPanel3.add(jTabbedPane4, gridBagConstraints);
+
 
             java.awt.GridBagLayout jPanel1Layout = new java.awt.GridBagLayout();
             jPanel1Layout.columnWidths = new int[] {0, 5, 0, 5, 0, 5, 0, 5, 0, 5, 0, 5, 0, 5, 0, 5, 0};
@@ -418,9 +494,16 @@ public class MainForm extends JFrame {
 
             seachButton.setFont(new java.awt.Font("Segoe Print", 1, 14)); // NOI18N
             seachButton.setText("Поиск");
+            seachButton.addActionListener(new java.awt.event.ActionListener() {
+                public void actionPerformed(java.awt.event.ActionEvent evt) {
+                    seachButtonActionPerformed(evt);
+                }
+            });
+
             gridBagConstraints = new java.awt.GridBagConstraints();
             gridBagConstraints.gridx = 6;
             gridBagConstraints.gridy = 0;
+
             jPanel1.add(seachButton, gridBagConstraints);
 
             gridBagConstraints = new java.awt.GridBagConstraints();
@@ -428,14 +511,17 @@ public class MainForm extends JFrame {
             gridBagConstraints.gridy = 24;
             gridBagConstraints.anchor = java.awt.GridBagConstraints.BELOW_BASELINE;
             gridBagConstraints.weightx = 0.5;
+
             jPanel3.add(jPanel1, gridBagConstraints);
 
             jLabel2.setFont(new java.awt.Font("Segoe Print", 2, 14)); // NOI18N
             jLabel2.setText("Поиск по дате выхода:");
+
             gridBagConstraints = new java.awt.GridBagConstraints();
             gridBagConstraints.gridx = 0;
             gridBagConstraints.gridy = 22;
             gridBagConstraints.gridwidth = 5;
+
             jPanel3.add(jLabel2, gridBagConstraints);
 
             jLabel3.setFont(new java.awt.Font("Segoe Print", 3, 14)); // NOI18N
@@ -447,6 +533,7 @@ public class MainForm extends JFrame {
             gridBagConstraints.gridheight = 2;
             gridBagConstraints.anchor = java.awt.GridBagConstraints.PAGE_START;
             gridBagConstraints.insets = new java.awt.Insets(7, 0, 7, 0);
+
             jPanel3.add(jLabel3, gridBagConstraints);
 
             gridBagConstraints = new java.awt.GridBagConstraints();
@@ -457,6 +544,7 @@ public class MainForm extends JFrame {
             gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
             gridBagConstraints.weightx = 1.0;
             gridBagConstraints.weighty = 1.0;
+
             getContentPane().add(jPanel3, gridBagConstraints);
 
             jMenuBar1.setFont(new java.awt.Font("Segoe Print", 1, 14)); // NOI18N
@@ -464,8 +552,10 @@ public class MainForm extends JFrame {
             saveMenuItem.setText("File");
             saveMenuItem.setFont(new java.awt.Font("Segoe Print", 1, 14)); // NOI18N
 
-            jMenuItem3.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_MASK));
+            jMenuItem3.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S,
+                    java.awt.event.InputEvent.CTRL_MASK));
             jMenuItem3.setText("Сохранить");
+
             jMenuItem3.addActionListener(new java.awt.event.ActionListener() {
                 public void actionPerformed(java.awt.event.ActionEvent evt) {
                     try {
@@ -484,6 +574,7 @@ public class MainForm extends JFrame {
 
             addMenuItem.setText("Добавить...");
             addMenuItem.setToolTipText("");
+
             addMenuItem.addActionListener(new java.awt.event.ActionListener() {
                 public void actionPerformed(java.awt.event.ActionEvent evt) {
                     addMenuItemActionPerformed(evt);
@@ -492,6 +583,7 @@ public class MainForm extends JFrame {
             editMenu.add(addMenuItem);
 
             deleteMenuItem.setText("Удалить");
+
             deleteMenuItem.addActionListener(new java.awt.event.ActionListener() {
                 public void actionPerformed(java.awt.event.ActionEvent evt) {
                     deleteMenuItemActionPerformed(evt);
@@ -510,38 +602,274 @@ public class MainForm extends JFrame {
             pack();
         }// </editor-fold>
 
-    private void graficValueChanged(javax.swing.event.ListSelectionEvent evt) {
-        // TODO add your handling code here:
-    }
 
     private void addMenuItemActionPerformed(java.awt.event.ActionEvent evt) {
         dialogAdd.setVisible(true);
     }
 
     private void deleteMenuItemActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
+        dialogDelete.setVisible(true);
     }
 
     private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) throws IOException { //save
+
+        app.filmsArr.clear();
         for(int i=0; i<modelFilms.getSize();i++){
             app.filmsArr.add(i,modelFilms.getElementAt(i));
+
         }
 
+        app.serialsArr.clear();
         for(int i=0; i<modelSerials.getSize();i++){
             app.serialsArr.add(i, modelSerials.getElementAt(i));
         }
 
+        app.pastArr.clear();
         for(int i=0; i<modelPast.getSize();i++){
             app.pastArr.add(i, modelPast.getElementAt(i));
         }
 
-        for(int i=0; i<modelGrafic.getSize();i++){
-            app.graficArr.add(i, modelGrafic.getElementAt(i));
-        }
+
+        //app.graficArr.clear();
+        //for(int i=0; i<modelGrafic.getSize();i++){
+            //app.graficArr.add(i, modelGrafic.getElementAt(i));
+        //}
 
         app.saveFilms();
         app.saveSerials();
+        app.savePast();
     }
+
+    private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {
+        String n=nameAdd.getText();
+        String day;
+            if(addDay.getValue().toString().length()==1){
+                day="0"+addDay.getValue().toString();
+            }
+            else{
+                day=addDay.getValue().toString();
+            }
+        String month;
+        if(addMonth.getValue().toString().length()==1){
+            month="0"+addMonth.getValue().toString();
+        }
+        else{
+            month=addMonth.getValue().toString();
+        }
+        String d=day+"."+month+"."+addYear.getSelectedItem().toString();
+
+        Date Current_Date = new Date();
+        SimpleDateFormat format1 = new SimpleDateFormat("dd.MM.yyyy");
+        //format1.format(Current_Date);
+
+        if (Integer.parseInt(format1.format(Current_Date).substring(format1.format(Current_Date).length()-3))>
+                Integer.parseInt(d.substring(d.length()-3))){
+            modelPast.addElement(n+" "+d);
+
+            app.pastArr.clear();
+            for(int j=0; j<modelPast.getSize();j++){
+                app.pastArr.add(j, modelPast.getElementAt(j));
+            }
+        }
+        else
+            if (Integer.parseInt(format1.format(Current_Date).substring(format1.format(Current_Date).length()-3))==
+                    Integer.parseInt(d.substring(d.length() - 3))) {
+                if (Integer.parseInt(format1.format(Current_Date).substring(3, 4)) > Integer.parseInt(d.substring(3, 4))) {
+                    modelPast.addElement(n + " " + d);
+
+                    app.pastArr.clear();
+                    for(int j=0; j<modelPast.getSize();j++){
+                        app.pastArr.add(j, modelPast.getElementAt(j));
+                    }
+                }
+                else {
+                    if (Integer.parseInt(format1.format(Current_Date).substring(3, 4)) == Integer.parseInt(d.substring(3, 4))) {
+                        if (Integer.parseInt(format1.format(Current_Date).substring(0, 1)) >= Integer.parseInt(d.substring(0, 1))) {
+                            modelPast.addElement(n + " " + d);
+
+                            app.pastArr.clear();
+                            for(int j=0; j<modelPast.getSize();j++){
+                                app.pastArr.add(j, modelPast.getElementAt(j));
+                            }
+                        }
+                        else {
+                            if (filmRadioButton.isSelected()) {
+                                modelFilms.addElement(n + " " + d);
+
+                                app.filmsArr.clear();
+                                for(int j=0; j<modelFilms.getSize();j++){
+                                    app.filmsArr.add(j,modelFilms.getElementAt(j));
+
+                                }
+                            } else {
+                                modelSerials.addElement(n + " " + d);
+
+                                app.serialsArr.clear();
+                                for(int j=0; j<modelSerials.getSize();j++){
+                                    app.serialsArr.add(j, modelSerials.getElementAt(j));
+                                }
+                            }
+                        }
+                    }
+                    else {
+                        if (filmRadioButton.isSelected()) {
+                            modelFilms.addElement(n + " " + d);
+
+                            app.filmsArr.clear();
+                            for(int j=0; j<modelFilms.getSize();j++){
+                                app.filmsArr.add(j,modelFilms.getElementAt(j));
+                            }
+                        }
+                        else {
+                            modelSerials.addElement(n + " " + d);
+
+                            app.serialsArr.clear();
+                            for (int j = 0; j < modelSerials.getSize(); j++) {
+                                app.serialsArr.add(j, modelSerials.getElementAt(j));
+                            }
+                        }
+                    }
+                }
+            }
+            else {
+                if (filmRadioButton.isSelected()) {
+                    modelFilms.addElement(n + " " + d);
+
+                    app.filmsArr.clear();
+                    for(int j=0; j<modelFilms.getSize();j++){
+                        app.filmsArr.add(j,modelFilms.getElementAt(j));
+
+                    }
+                }
+                else {
+                    modelSerials.addElement(n + " " + d);
+
+                    app.serialsArr.clear();
+                    for(int j=0; j<modelSerials.getSize();j++){
+                        app.serialsArr.add(j, modelSerials.getElementAt(j));
+                    }
+                }
+            }
+
+        app.createGrafic();
+        app.sortGrafic();
+
+        modelGrafic.clear();
+        for(String str:app.graficArr){
+            modelGrafic.addElement(str);
+        }
+
+        dialogAdd.dispose();
+
+    }
+
+    private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {
+        dialogAdd.dispose();
+    }
+
+    private void okDeleteButtonActionPerformed(java.awt.event.ActionEvent evt) throws IOException {
+        String nameDel=nameDelete.getText();
+        boolean find=false;
+
+
+        for (int i=0;i<modelFilms.getSize();i++){
+            if (modelFilms.getElementAt(i).substring(0,modelFilms.getElementAt(i).length()-11).equals(nameDel)) {
+                modelFilms.remove(i);
+                // modelGrafic.remove(найденный элемент);
+                find = true;
+
+                app.filmsArr.clear();
+                for(int j=0; j<modelFilms.getSize();j++){
+                    app.filmsArr.add(j,modelFilms.getElementAt(j));
+
+                }
+            }
+        }
+
+        //if(!find) {
+            for (int i = 0; i < modelSerials.getSize(); i++) {
+                if (modelSerials.getElementAt(i).substring(0, modelSerials.getElementAt(i).length() - 11).equals(nameDel)) {
+                    modelSerials.remove(i);
+                    // modelGrafic.remove(найденный элемент);
+                    find = true;
+
+                    app.serialsArr.clear();
+                    for(int j=0; j<modelSerials.getSize();j++){
+                        app.serialsArr.add(j, modelSerials.getElementAt(j));
+                    }
+                }
+            }
+       // }
+
+
+        //if (!find) {
+            for (int i = 0; i < modelPast.getSize(); i++) {
+                if (modelPast.getElementAt(i).substring(0, modelPast.getElementAt(i).length() - 11).equals(nameDel)) {
+                    modelPast.remove(i);
+                    // modelGrafic.remove(найденный элемент);
+                    find = true;
+
+                    app.pastArr.clear();
+                    for(int j=0; j<modelPast.getSize();j++){
+                        app.pastArr.add(j, modelPast.getElementAt(j));
+                    }
+                }
+            }
+       // }
+
+        modelGrafic.clear();
+        app.createGrafic();
+        app.sortGrafic();
+
+
+        for(String str:app.graficArr){
+            modelGrafic.addElement(str);
+        }
+
+        if(!find){
+            javax.swing.JOptionPane.showMessageDialog(null,
+                    "Not found","Error", JOptionPane.ERROR_MESSAGE);
+        }
+        dialogDelete.dispose();
+
+    }
+
+    private void seachButtonActionPerformed(java.awt.event.ActionEvent evt) {
+        ArrayList<Integer> selectedArr=new ArrayList<Integer>();
+
+        for (int i=0;i<modelGrafic.getSize();i++){
+            if (Integer.parseInt(modelGrafic.get(i).substring(modelGrafic.get(i).length()-4))==Integer.parseInt(seachYear.getSelectedItem().toString())){
+                if (Integer.parseInt(seachMonth.getValue().toString())==0){
+                    selectedArr.add(i);
+                }
+                else{
+                    if (Integer.parseInt(seachMonth.getValue().toString()) == Integer.parseInt(modelGrafic.get(i).substring(modelGrafic.get(i).length()-7,modelGrafic.get(i).length()-5))){
+                        if(Integer.parseInt(seachDay.getValue().toString())==0){
+                            selectedArr.add(i);
+                        }
+                        else{
+                            if(Integer.parseInt(seachDay.getValue().toString())==Integer.parseInt(modelGrafic.get(i).substring(modelGrafic.get(i).length()-10,modelGrafic.get(i).length()-8))){
+                                selectedArr.add(i);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        int[] tmp=new int[selectedArr.size()];
+
+        for (int i=0; i<selectedArr.size();i++){
+            tmp[i]=selectedArr.get(i);
+        }
+
+        grafic.setSelectedIndices(tmp);
+
+    }
+
+    private void graficValueChanged(javax.swing.event.ListSelectionEvent evt) {
+        // TODO add your handling code here:
+    }
+
 
     private void serialValueChanged(javax.swing.event.ListSelectionEvent evt) {
         // TODO add your handling code here:
@@ -551,53 +879,27 @@ public class MainForm extends JFrame {
         // TODO add your handling code here:
     }
 
-    private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {
-        String n=nameAdd.getText();
-        String d=addDay.getValue().toString()+"."+addMonth.getValue().toString()+"."+addYear.getSelectedItem().toString();
-        Date Current_Date = new Date();
-        SimpleDateFormat format1 = new SimpleDateFormat("dd.MM.yyyy");
-        format1.format(Current_Date);
-        if (Integer.parseInt(format1.format(Current_Date).substring(format1.format(Current_Date).length()-4))>Integer.parseInt(d.substring(d.length()-4))){
-            modelPast.addElement(n+" "+d);
-        }
-        else
-            if (Integer.parseInt(format1.format(Current_Date).substring(format1.format(Current_Date).length()-4))==Integer.parseInt(d.substring(d.length()-4))) {
-                if (Integer.parseInt(format1.format(Current_Date).substring(3, 4)) > Integer.parseInt(d.substring(3, 4))) {
-                    if (Integer.parseInt(format1.format(Current_Date).substring(0, 1)) > Integer.parseInt(d.substring(0, 1))) {
-                        modelPast.addElement(n + " " + d);
-                    }
-                }
-            }
-        else {
-                if (filmRadioButton.isSelected()) {
-                    modelFilms.addElement(n + " " + d);
-                }
-                else
-                    modelSerials.addElement(n + " " + d);
-            }
-        dialogAdd.dispose();
-
-    }
-
-    private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {
-        dialogAdd.dispose();
-    }
-
     private void pastValueChanged(javax.swing.event.ListSelectionEvent evt) {
         // TODO add your handling code here:
     }
 
-
+   // public static void putDimensions(Dimension dimension)
+    //{
+    //    userPrefs.putInt("width", (int)dimension.getWidth());
+    //    userPrefs.putInt("height", (int)dimension.getHeight());
+    //}
 
     /**
          * @param args the command line arguments
          */
+
         public static void main(String args[]) throws IOException {
         /* Set the Nimbus look and feel */
             //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
          * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
          */
+
             try {
                 for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
                     if ("Nimbus".equals(info.getName())) {
@@ -605,6 +907,7 @@ public class MainForm extends JFrame {
                         break;
                     }
                 }
+
             } catch (ClassNotFoundException ex) {
                 java.util.logging.Logger.getLogger(MainForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
             } catch (InstantiationException ex) {
@@ -617,8 +920,12 @@ public class MainForm extends JFrame {
             //</editor-fold>
 
 
+
             app.uploadFilms();
             app.uploadSerials();
+            app.uploadPast();
+             app.createGrafic();
+            app.sortGrafic();
 
             for(String str:app.filmsArr){
                 modelFilms.addElement(str);
@@ -642,9 +949,11 @@ public class MainForm extends JFrame {
 
 
         /* Create and display the form */
+
             java.awt.EventQueue.invokeLater(new Runnable() {
                 public void run() {
                     new MainForm().setVisible(true);
+                    //putDimensions(new Dimension(MainForm.WIDTH,MainForm.HEIGHT));
                 }
             });
         }

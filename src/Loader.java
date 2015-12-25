@@ -30,9 +30,21 @@ public class Loader {
         f.close();
     }
 
+    public void uploadPast (ArrayList<String> pastArr) throws IOException {
+        RandomAccessFile f=new RandomAccessFile("fPast.txt","r");
+        f.seek(0);
+
+        while(f.getFilePointer()<f.length()) {
+            pastArr.add(f.readUTF());
+        }
+
+        f.close();
+    }
+
+
     public void saveFilms(ArrayList<String> filmsArr) throws IOException {
         RandomAccessFile f=new RandomAccessFile("fFilms.txt","rw");
-        //f.setLength(0);
+        f.setLength(0);
         f.seek(0);
 
         for (int i=0;i<filmsArr.size();i++){
@@ -43,11 +55,22 @@ public class Loader {
 
     public void saveSerials(ArrayList<String> serialsArr) throws IOException {
         RandomAccessFile f=new RandomAccessFile("fSerials.txt","rw");
-        //f.setLength(0);
+        f.setLength(0);
         f.seek(0);
         for (int i=0;i<serialsArr.size();i++){
             f.writeUTF(serialsArr.get(i));
         }
         f.close();
     }
+
+    public void savePast(ArrayList<String> pastArr) throws IOException {
+        RandomAccessFile f=new RandomAccessFile("fPast.txt","rw");
+        f.setLength(0);
+        f.seek(0);
+        for (int i=0;i<pastArr.size();i++){
+            f.writeUTF(pastArr.get(i));
+        }
+        f.close();
+    }
+
 }
